@@ -1,3 +1,5 @@
+package src;
+
 import util.Input;
 
 import java.io.*;
