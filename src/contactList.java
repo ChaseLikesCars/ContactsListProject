@@ -1,7 +1,6 @@
 package src;
-
+// Cmports needed methods and classes
 import util.Input;
-
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -11,13 +10,17 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
+// Class defining contactList and its associated variables
 public class contactList {
     static Input input = new Input();
     static String directory = "src/data";
     static String filename = "contacts.txt";
+    // Defining the path to access our contacts.txt
     public static Path contactListPath = Paths.get(directory, filename);
+    // Defining a List of Strings called contactList
     public static List<String> contactList;
 
+    // Reading line by line and implementing them as individual items in the String List, on failure is caught
     static {
         try {
             contactList = Files.readAllLines(contactListPath);
@@ -26,20 +29,29 @@ public class contactList {
         }
     }
 
+    // Creating an ArrayList of objects(person) called contacts
     public static List<Person> contacts = new ArrayList<>();
 
+    //main to start application
     public static void main(String[] args) throws IOException {
             start();
     }
+
+    // Start method responsible for starting application
     public static void start() throws IOException {
         System.out.println("Welcome to your Contacts List");
+
+        // For Loop that iterates over contactList String List
         for (String con: contactList) {
+            // Defining an array of strings called userSplit and making it equal to the contact split on second space
             String [] userSplit = con.split("(?<!\\G\\S+)\\s");
-            String name = userSplit[0];
-            String numbers = userSplit[1];
+            // Defining a new Person Object named contactP that takes in two parameters
             Person contactP = new Person("","");
-            contactP.setName(name);
-            contactP.setPhoneNumber(numbers);
+            // Sets the value of the first set of key value pairs
+            contactP.setName(userSplit[0]);
+            // Sets the value of the second set of key value pairs
+            contactP.setPhoneNumber(userSplit[1]);
+            // Adding the object(contactP) to the ArrayList contacts
             contacts.add(contactP);
         }
         menu();
@@ -74,7 +86,6 @@ public class contactList {
             File inputFile = new File ("src/data/contacts.txt");
             File tempFile = new File("tempFile.txt");
 
-            BufferedReader reader = new BufferedReader(new FileReader(inputFile));
             BufferedWriter writer = new BufferedWriter(new FileWriter(tempFile));
 
             for (Person person: contacts) {
@@ -173,15 +184,18 @@ public class contactList {
 
         String userInput = input.getString("Enter the Full Name of the contact to Delete: ").toLowerCase().replaceAll("\\s+","");
         int count = -1;
+        boolean deleted = false;
         for (Person person: contacts){
             count++;
-            System.out.println(person.getName());
-            if (userInput.equals(person.getName().toLowerCase().replaceAll("\\s+",""))){
+            if (userInput.equals(person.getName().toLowerCase().replaceAll("\\s+",""))) {
+                contacts.remove(person);
+                deleted = true;
                 break;
-            }else {
-                System.out.println("Sorry User is not in your contacts! Try again");
-                deleteContact();
             }
+        }
+        if (!deleted) {
+            System.out.println("User not in Contacts, try again");
+            deleteContact();
         }
         menu();
     }
