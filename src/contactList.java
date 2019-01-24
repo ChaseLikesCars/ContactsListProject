@@ -62,11 +62,12 @@ public class contactList {
         System.out.println("2 - Add Contact");
         System.out.println("3 - Search by Name");
         System.out.println("4 - Delete existing Contact");
-        System.out.println("5 - Exit");
-        int selection = Input.getInt(1, 5);
+        System.out.println("5 - Edit existing Contact");
+        System.out.println("6 - Exit");
+        int selection = Input.getInt(1, 6);
 
         if (selection == 1) {
-                showContactList();
+                showContactListContinue();
         }else if(selection == 2) {
             try {
                 addContact();
@@ -81,7 +82,9 @@ public class contactList {
             }
         }else if (selection == 4) {
                 deleteContact();
-        }else {
+        } else if(selection == 5) {
+            editContact();
+        } else {
             System.out.println("Thank You for using Our Application");
             File inputFile = new File ("src/data/contacts.txt");
             File tempFile = new File("tempFile.txt");
@@ -97,7 +100,7 @@ public class contactList {
             System.exit(0);
         }
     }
-    public static void showContactList() throws IOException {
+    public static void showContactListContinue() throws IOException {
         System.out.println("Name | Phone number\n" + "---------------");
         for (Person person: contacts) {
             String user = person.getName();
@@ -106,6 +109,19 @@ public class contactList {
         }
         System.out.println();
         menu();
+    }
+
+    public static int showContactListNumber() throws IOException {
+        System.out.println("Name | Phone number\n" + "---------------");
+        int count = 0;
+        for (Person person: contacts) {
+            count++;
+            String user = person.getName();
+            String numb = person.getPhoneNumber();
+            System.out.printf("%d- %s | %s |%n", count,user,numb);
+        }
+        System.out.println();
+        return count;
     }
 
     public static void addContact() throws IOException {
@@ -196,6 +212,36 @@ public class contactList {
         if (!deleted) {
             System.out.println("User not in Contacts, try again");
             deleteContact();
+        }
+        menu();
+    }
+
+    public static void editContact() throws IOException {
+
+        int userInput = Input.getInt(1, showContactListNumber(),"Which user do you want to edit?");
+        System.out.printf("1)Name Edit: %s \n2)Phone Number Edit: %s", contacts.get(userInput-1).getName(), contacts.get(userInput-1).getPhoneNumber());
+        int seconduserInput = Input.getInt();
+        if (seconduserInput == 1) {
+            String newName = Input.getString("Please Write New Name: \nWith Format First Last");
+            if (newName.matches("(.*)(\\s)(.*)")){
+            contacts.get(userInput-1).setName(newName);
+            }else {
+                System.out.println("Follow Direction");
+                editContact();
+            }
+        }else if (seconduserInput == 2) {
+            String newNumber = Input.getString("Please Enter New Number: \nWith Format 111-222-3333 or 111-2222");
+             if (newNumber.matches("(\\d{3}(\\W))(\\d{3})(\\W)(\\d{4})")){
+                 contacts.get(userInput-1).setPhoneNumber(newNumber);
+            } else if (newNumber.matches("(\\s)(\\d{3})(\\W)(\\d{4})")) {
+                 contacts.get(userInput - 1).setPhoneNumber(newNumber);
+             }else {
+                 System.out.println("Follow Direction");
+                 editContact();
+             }
+        }else {
+            System.out.println("Try Again");
+            editContact();
         }
         menu();
     }

@@ -50,13 +50,14 @@ public class Input {
         } catch (InputMismatchException ex) {
             System.out.println("User did not type Integer!");
         }
-        if (userInt > min && userInt < max) {
+        if (userInt >= min && userInt <= max) {
             return userInt;
         } else if (userInt < min && userInt > max) {
             getInt(min, max);
             return userInt;
         }else {
             System.out.println("Didn't type correct Number ");
+            getInt(min, max, prompt);
             return userInt;
         }
     }
@@ -75,6 +76,7 @@ public class Input {
             return userInt;
         }else {
             System.out.println("Didn't type correct Number");
+            getInt(min, max);
             return userInt;
         }
     }
